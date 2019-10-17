@@ -1,0 +1,9 @@
+﻿Tasks to be completed for P04
+1.	Setup project structure.
+2.	Data analysis and abstraction.
+3.	Data processing and formatting in a consistent format acceptable by the application.
+4.	Integrate map for School visualization.
+5.	Build database for School geo-locations (not available in provided data).
+6.	Show Schools as pointers on map.
+7.	Show demographic summary on mouse hover.
+8.	Show demographic statistics (visualization) on click for respective school.

@@ -1,0 +1,91 @@
+/*html, body {
+  margin: 10px;
+  padding: 0;
+  font-family: sans-serif;
+}*/
+
+#controls {
+    font-size: 18px;
+    margin-bottom: 10px;
+    /*margin-top: 4%;*/
+}
+
+input[type="radio"] {
+  margin-top: -1px;
+  vertical-align: middle;
+}
+
+/*span:nth-child(2) {
+  margin-left: 20px;
+}*/
+
+#school-info {
+  color: #666;
+  font-size: 25px;
+  position: absolute;
+  top: 120px;
+  left: 40px;
+}
+
+.row1 {
+    /*display: flex;*/
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 1%;
+}
+
+.column1 {
+    width: 300px;
+    margin-right: 2%;
+    float: left;
+}
+
+.column2 {
+    width: 50%;
+    float: left;
+}
+.sub-col1 {
+    width: 200px;
+    margin-right: 2%;
+    float: left;
+}
+
+.sub-col2 {
+    width: 42%;
+    float: left;
+}
+.clearfix {
+    clear: both
+}
+
+svg {
+  border: 1px solid #ddd;
+}
+
+circle {
+  stroke: white;
+  stroke-width: 1.5;
+}
+
+.schoolNetwork-key-element text {
+  fill: white;
+}
+
+#slider-bubble {
+    float: left;
+    width: 40%;
+    margin-top: 4px;
+}
+
+.ui-slider-tick-mark {
+    display: inline-block;
+    width: 2px;
+    background: black;
+    height: 10px;
+    position: absolute;
+    /*top: -2px;*/
+}
+
+g.schoolNetwork-key-element text {
+    font-size: 11px;
+}

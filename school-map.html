@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CS594 UIC: CPS</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="./css/starter-template.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">CPS Data-driven Visualizations</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="school-map.html">Map</a></li>
+                    <li><a href="school-bubble.html">School Demographies</a></li>
+                    <li><a href="school-networks.html">School Networks</a></li>
+                    <li><a href="school-per-year.html">Schools Per Year</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+
+    <div class="container" style="width:100%;">
+        <div class="row1">
+            <div class="column1">
+                <input type="text" id="school-zip" placeholder="Zip Code" />
+                <button id="btn-school-zip" type="button" class="btn btn-primary">Search</button>
+            </div>
+            <div class="column2">
+                <div>
+                    <label for="year">Showing data for year:</label>
+                    <input type="text" id="year" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                </div>
+                <div id="slider-map"></div>
+            </div>
+        </div>
+        <br />
+        <div>
+            <div id='map'></div>
+            <br />
+            <p>
+                Use SHIFT-Click to add schools to comparison
+                <input type="button" id="schoolCompareButton" readonly style="opacity:0;" />
+            </p>
+        </div>
+        <div id="profile"></div>
+    </div><!-- /.container -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.13/d3.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <script src="js/leaflet-svg-shape-markers.min.js"></script>
+    <script src="js/jquery.csv.min.js"></script>
+    <script src="js/data/cps-schema.js"></script>
+    <script src="js/data/chicago-map.js"></script>
+    <script src="js/models/cps-school-data.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="js/models/model.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/controllers/school-map-controller.js"></script>
+    <script src="js/views/school-map.js"></script>
+    <script src="js/views/school-profile.js"></script>
+    <script src="js/views/tooltip.js"></script>
+    <script src="js/label.js"></script>
+    <!--<script src="js"></script>-->
+</body>
+</html>

@@ -1,0 +1,19 @@
+Designated tasks:
+
+Data filtering - initially by array.
+
+Data simplifying - removing unneeded information permanently from data excel files.
+
+Investigate how to grab geo-location (lat, long) for high schools and implement for use to display
+pins on the map.
+
+Create initial design of bar chart showing demographic on map (for a single high school).
+
+Create initial design of line graph showing trends on map (for a single high school).
+
+Prepare paper prototype for presentation of client for feedback.
+
+Design means of visual encoding of high schools on the map of chicago, discuss, and implement.
+  - Possibly bubbles indicating student body population.
+  
+Begin layout design of whole web page for best organization of all the visualizations.

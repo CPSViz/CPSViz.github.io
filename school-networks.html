@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CS594 UIC: CPS</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="./css/starter-template.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet" />
+
+    <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />-->
+    <!--<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>-->
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">CPS Data-driven Visualizations</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="school-map.html">Map</a></li>
+                    <li><a href="school-bubble.html">School Demographies</a></li>
+                    <li class="active"><a href="school-networks.html">School Networks</a></li>
+                    <li><a href="school-per-year.html">Schools Per Year</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+
+    <div class="container" style="width:100%;">
+        <div id="map"></div>
+        <div id="profile"></div>
+    </div><!-- /.container -->
+    
+    <!-- Network filters div. Moved into map div onload. -->
+    <div id="div-network-filters" style="display: none;" class="hasPointer paddedInputs">
+        <fieldset class="filters">
+            <legend>Aligned Sort</legend>
+            <select id="network-sort">
+                <option disabled="true">--Sort By--</option>
+                <option selected value=1>Alphabetical</option>
+                <option value=2>Schools per network - mean over time period</option>
+                <option value=3>Students per network - mean over time period</option>
+            </select>
+        </fieldset>
+        <fieldset class="hasPointer paddedInputs filters">
+            <legend>All or HS</legend>
+            <input type="radio" name="nf-schools" id="nf-schools1" />
+            <label for="nf-schools1">All schools</label>
+            <input type="radio" name="nf-schools" id="nf-schools2" checked />
+            <label for="nf-schools2">HS only</label>
+        </fieldset>
+        <br style="clear:both;"/>
+        Click a bar to view network demographics
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.13/d3.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="js/data/cps-schema.js"></script>
+    <script src="js/models/model.js"></script>
+    <script src="js/views/school-profile.js"></script>
+    <script src="js/views/school-networks.js"></script>
+    <script src="js/views/tooltip.js"></script>
+    <script src="js/label.js"></script>
+</body>
+</html>

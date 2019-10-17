@@ -1,0 +1,33 @@
+Tasks to complete by project demo
+---------------------------------
+
+Project Checkpoint 1, First Demo
+	Due Date: Tues., Nov. 6, 2018
+
+Bubble visualization on map by school and demography.
+	At least a rough prototype of this.
+	12 hours
+
+MVC: Partition program into MVC pattern, based on Oct. 23 lecture
+	2 hours
+
+Get geo-location data for schools.
+	Looking into this, if required, with Josue.
+	2 hours
+
+P02: State of the Art Report
+	2 hours
+
+P02: Data and Task Abstraction
+	2 hours
+
+P03: Goals and Targets
+	1 hour
+
+P03: Functional Specifications	
+	2 hours
+
+P04: Prototypes due
+	Most work will be done prior to this.
+	But some work to help here.
+	2 hours

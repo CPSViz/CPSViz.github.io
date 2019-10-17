@@ -1,0 +1,561 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CS594 UIC: CPS</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="./css/starter-template.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+
+
+
+
+
+<style>
+
+*{
+    font-family: sans-serif;
+
+}
+
+/*svg,
+.legend{
+    background: #e8e8e3;
+}*/
+
+.legend {
+    padding: 10px;
+
+}
+
+.rect{
+    display: inline-block;
+    height: 20px;
+    margin-right: 5px;
+    width: 20px;
+    position: relative;
+    vertical-align: text-bottom;
+}
+
+ul{
+    list-style: none;
+    display: flex;
+
+    align-items: center;
+}
+
+ul li{
+    margin-right: 10px;
+}
+
+/*ul li:hover{
+    cursor: pointer;
+}*/
+
+
+/* Grid Lines */
+
+.line {
+    fill: none;
+    stroke: #06A09D;
+    stroke-width: 10px;
+}
+
+.grid line {
+    stroke: #FFD5D1;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">CPS Data-driven Visualizations</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="school-map.html">Map</a></li>
+                    <li><a href="school-bubble.html">School Demographies</a></li>
+                    <li><a href="school-networks.html">School Networks</a></li>
+                    <li class="active"><a href="school-per-year.html">Schools Per Year</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+
+<fieldset class="filters">
+    <legend>Year:</legend>
+    <select id="yearOptions" onchange="loadSchools()" class="legend2">
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+        <option value="2017">2017</option>
+        <option value="2016">2016</option>
+        <option value="2015">2015</option>
+        <option value="2014">2014</option>
+    </select>
+</fieldset>
+<fieldset class="filters">
+    <legend>Select demography to sort:</legend>
+    <div class="legend"></div>
+</fieldset>
+
+<div class="chart"></div>
+<!-- <div id="profile"></div> -->
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.13/d3.min.js"></script>-->
+    <script src="js/jquery.csv.min.js"></script>
+    <script src="js/data/cps-schema.js"></script>
+    <script src="js/data/chicago-map.js"></script>
+    <script src="js/models/cps-school-data.js"></script>
+    <script src="js/controllers/school-map-controller.js"></script>
+<!--     <script src="js/views/school-profile.js"></script>
+    <script src="js/views/school-networks.js"></script>
+    <script src="js/models/model.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    
+    <script src="js/models/model.js"></script>
+    <script src="js/views/school-profile.js"></script>
+    <script src="js/views/tooltip.js"></script>
+<!--     <script src="js/views/school-profile.js"></script>
+    <script src="js/views/school-networks.js"></script> -->
+
+    <!--<script src="js"></script>-->
+
+
+            <script>
+                function loadSchools(){
+
+
+                    //console.log("************");
+                    //console.log(model);
+                    var allHS = [];
+                    // //console.log({allHS});
+                    // //console.log(Object.keys({allHS})[0]);
+                    for (var i in cpsData.rows) {
+                      var r = cpsData.rows[i];
+                      if (r[5].indexOf('High School') == 0) {
+                        allHS.push(r);
+                        }
+                    }
+                    // //console.log("all the high schools: ");
+                    // //console.log(allHS);
+                    var yr14Schools;
+                    var yr14HSDemos = [];
+                    // d3.csv('data/FY14_Racial_Ethnic_Survey.csv', function(data) {
+                    //     yr14Schools = data;
+                    //     yr14HSDemos = data;
+                    //     // //console.log(yr14Schools);
+                    //     return {data};
+                    //     // data.forEach(function(d){
+                    //     //     for(var i in allHS){
+                    //     //         // if(stop < 2){//console.log(allHS[i][0]); stop++;}
+                    //     //        if(d[0] == allHS[i][0]){
+                    //     //             yr14HSDemos.push(d);
+                    //     //        }
+
+                    //     //     }
+                    //     // });
+
+                    // }, function(error, rows){
+                    //     //console.log("SECOND FUNCTION");
+                    //     // for(var i = 0; i < 10; i++){//console.log(rows);}
+
+                    // });
+                    d3.csv('data/yr14DemoData.csv').row(function(d) {
+                        yr14HSDemos.push(d);
+
+                    }) .get(function() {
+                        //console.log("IN GET FUNCTION!");
+
+                        var attributes = ["African American", "Hispanic", "White", "Asian", "Asian/↵Pacific Islander↵(Retired)", "Hawaiian/↵Pacific Islander", "Mulit-Racial", "Native American/↵Alaskan"]; 
+                        var matched14HS = [];
+                        for(var i = 0; i < yr14HSDemos.length; i++){
+                            for(var j = 0; j < allHS.length; j++){
+                                var hsID = allHS[j];
+                                var yr14HS = yr14HSDemos[i];
+                                if(yr14HS["School ID"] == hsID[0]){
+                                    matched14HS.push(yr14HSDemos[i]);
+                                }
+
+                            }
+                        }
+
+                        //console.log(matched14HS);
+
+
+                        //console.log("bbbbb");
+
+
+
+
+                        let clickedKeys = [];
+                        // let dataToStack = [];
+                        let totalData = [];
+
+                        // let keys = ['usedInf','newInf','totalInf'];
+                        // let keysOrder = ['usedInf','newInf','totalInf'];
+
+
+                        let reorderKeys = [];
+                        let reorderColors = [];
+
+                        let stackedSeries;
+
+                        let w = 3500;
+                        //~ let w = window.innerWidth - 60;
+                        let h =900;
+
+                        let margin = {
+                            top: 60,
+                            bottom: 300,
+                            left: 50,
+                            right: 120,
+                        };
+
+                        let width = w - margin.left - margin.right;
+                        let height = h - margin.top - margin.bottom;
+
+                        // let colors = ['#7a0177', '#ae017e', '#dd3497', '#f768a1', '#fa9fb5', '#fcc5c0', '#fde0dd', '#fff7f3'];
+                        // let colorsOrder = ['#7a0177', '#ae017e', '#dd3497', '#f768a1', '#fa9fb5', '#fcc5c0', '#fde0dd', '#fff7f3'];
+
+                        let colors = ['#011627', '#FF3366', '#2EC4B6', '#8AAA79', '#837569', '#FFF07C', '#6369D1', '#B0FE76'];
+                        let colorsOrder = ['#011627', '#FF3366', '#2EC4B6', '#8AAA79', '#837569', '#FFF07C', '#6369D1', '#B0FE76'];
+
+                        // let dataToStack = matched14HS;
+                        //console.log(model);
+                        
+                        d3.select("svg").remove();
+                        d3.select(".legend ul").remove();
+                        var selectBox = document.getElementById("yearOptions");
+                        var year = selectBox.options[selectBox.selectedIndex].value;
+                        var idx = 0;
+                        if(year == 2019){idx = 0;}
+                        else if(year == 2018){idx = 1;}
+                        else if(year == 2017){idx = 2;}
+                        else if(year == 2016){idx = 3;}
+                        else if(year == 2015){idx = 4;}
+                        else if(year == 2014){idx = 5;}
+                        //console.log("year: ", year, "idx: ", idx)
+                        //console.log(model.data.highSchools[year]);
+                        
+                        var highSchools = [];
+                        for(var i in model.filesToLoad.Demography[idx].data){
+                            if(i!=0){
+                            for(const key of Object.keys(model.data.highSchools[year])){
+                                // //console.log(key, model.data.highSchools[2019][key]);
+                                // var idCompare = Object.keys({  model.data.highSchools[2019][key] })[0];
+                                if(model.filesToLoad.Demography[idx].data[i]["School ID"] == key){
+                                    if (model.filesToLoad.Demography[idx].data[i].Network == '') continue;
+                                    if (model.filesToLoad.Demography[idx].data[i].Network == 'Dsitrict Total') continue;
+                                    if (model.filesToLoad.Demography[idx].data[i].Network == 'District Total') continue;
+                                    highSchools.push(model.filesToLoad.Demography[idx].data[i]);
+                                }
+                            }
+                        }
+                        }
+
+
+
+                        let keys = []; let keysOrder = [];
+                        if(year == 2015 || year == 2014 || year == 2016){
+                            keys = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/Pacific Islander(Retired)No", "Mulit-RacialNo", "AsianNo", "Not AvailableNo"];
+                            keysOrder = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/Pacific Islander(Retired)No", "Mulit-RacialNo", "AsianNo", "Not AvailableNo"];                            
+                        }else if(year == 2017){
+                            keys = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Multi-RacialNo", "AsianNo", "Not AvailableNo"];
+                            keysOrder = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Multi-RacialNo", "AsianNo", "Not AvailableNo"]; 
+                        }else if(year == 2018){
+                            keys = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Mulit-RacialNo", "AsianNo", "Not AvailableNo"];
+                            keysOrder = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Mulit-RacialNo", "AsianNo", "Not AvailableNo"]; 
+                        }else {
+                            keys = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Multi-RacialNo", "AsianNo", "Not AvailableNo"];
+                            keysOrder = ["African AmericanNo", "HispanicNo", "WhiteNo", "Native American/AlaskanNo", "Asian/ Pacific Islander (Retired)No", "Multi-RacialNo", "AsianNo", "Not AvailableNo"];
+                        }
+
+                        //console.log("WOOH")
+                        //console.log(highSchools);
+                        let dataToStack = highSchools;
+
+
+
+
+
+                        function getKeys() {
+                            return keys
+                        }
+
+                        function createStack() {
+                            stack = d3.stack()
+                            .keys(getKeys());
+                            stackedSeries = stack(dataToStack);
+                            //console.log("****** sseries")
+                            //console.log(stackedSeries)
+                            //console.log("******")
+                        }
+
+                        createStack();
+
+
+
+
+                        
+                        var chart, svg, x, y, n;
+
+
+                        drawChart();
+
+                        function drawChart() {
+                            d3.select("svg").remove();
+                            
+                             x = d3.scaleBand()
+                            .domain(dataToStack.map(function(d){
+                                    //let date = new Date(d.date);
+                                    // //console.log("x scale mapping")
+                                    // //console.log(d)
+                                    if(year == 2016 || year == 2015){
+                                        return d["Education Units"];
+                                    }else if (year == 2014){
+                                        return d["Educational Unit"]
+                                    }
+                                    return d["School Name"];
+                                    // return d[1];
+
+                                }))
+                            .rangeRound([0,width])
+                            .padding(0.05);
+
+                            y = d3.scaleLinear()
+                            .domain([0, d3.max(stackedSeries, function(d) {
+                                return d3.max(d, (d) => {
+                                        // //console.log("y scale mapping")
+                                        // //console.log(d)
+                                        return d[1];
+                                    })
+                            })])
+                            .range([height, 0]);
+
+                            svg = d3.select('.chart').append('svg')
+                            .attr('class', 'chart')
+                            .attr('width', w)
+                            .attr('height', h);
+
+                            chart = svg.append('g')
+                            .classed('graph', true)
+                            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                            const layersBarArea = chart.append('g')
+                            .attr('class', 'layers');
+
+                            layersBarArea.selectAll('g.layer').remove();
+
+                            let layersBar = layersBarArea.selectAll('.layer').data(stackedSeries)
+                            .enter()
+                            .append('g')
+                            .attr('barIndex', function(d, i) { return i; })
+                            .on("mouseover", function(d, i) { 
+                            })
+                            .attr('class', 'layer')
+                            .style('fill', (d, i) => {
+                                return colors[i];
+                            });
+
+                            layersBar.selectAll('rect')
+                            .data((d) => {
+                                return d
+                            })
+                            .enter()
+                            .append('rect')
+                                .attr('d', function(d) { return d; })
+                                .attr('i', function(d, i) { return i; })
+                                .on('click', function(d, i) {
+                                    // schoolProfile.load( ... );
+                                })
+                                .on("mouseover", function(d, i) { 
+                                    // i is demographic index
+                                    // d is school row
+                                    // also available in dataToStack[i],
+                                    // although this is invalid if sorted
+                                    var barIndex = this.parentNode
+                                        .getAttribute('barIndex');
+                                    //console.log(d);
+                                    //console.log(d.data);
+                                    //console.log(keys[barIndex]);
+                                    
+                                    var dm = keys[barIndex];
+                                    var sname;
+                                    if (d.data['School Name']) {
+                                        sname = d.data['School Name'];
+                                    } else if (d.data['Education Units']) {
+                                        sname = d.data['Education Units'];
+                                    } else if (d.data['Educational Unit']) {
+                                        sname = d.data['Educational Unit'];
+                                    }
+                                        
+                                    divToolTip.html("*****Demographic: "
+                                        + dm + 
+                                        "<br/>*****School: " + sname + 
+                                        "<br/>*****Demographic Population: " + d.data[dm])
+                                      .style('left', (d3.event.pageX) + 'px')
+                                      .style('top', (d3.event.pageY - 28) + 'px');
+                                    divToolTip.transition()
+                                      .duration(200)
+                                      .style('opacity', 0.8);
+                                })
+                                .on("mouseout", function() { 
+                                    divToolTip.transition()
+                                      .duration(500)
+                                      .style('opacity', 0);
+                                })
+                                .attr('height', 0)
+                                .attr("y", h - margin.bottom - margin.top)
+                                .attr('x', (d, i) => {
+                                        // //console.log("rect x")
+                                        // //console.log(d)
+                                        if(year == 2016 || year == 2015){
+                                            return x(d.data["Education Units"]);
+                                        }else if (year == 2014){
+                                            return x(d.data["Educational Unit"]);
+                                        }
+
+                                        return x(d.data["School Name"])
+                                    })
+                                .attr('width', x.bandwidth())
+                                .transition()
+                                .duration(400)                            
+                                .attr('height', (d, i) => {
+                                    // //console.log("looking at height")
+                                    // //console.log(d)
+                                    if(d[1] == NaN || d[0] == NaN){return 0;}
+
+                                    return y(d[0]) - y(d[1]);
+                                })
+                                .attr('y', (d) => {
+                                        // //console.log("rect y")
+                                        //console.log(d)
+                                        if(d[1] == NaN ){return 0;}
+                                        return y(d[1]);
+                                })
+                            
+                            
+                            
+                       
+                        
+                         var gx = chart.append('g')
+                        .classed('x axis', true)
+                        .attr("transform", "translate(0," + (height) + ")")
+                        .call(d3.axisBottom(x))
+                        .style('text-anchor', 'start')
+                        .selectAll("text")
+                        .attr("transform", "rotate(45)")
+                        
+                        // .attr("dy", "50")
+                        // .attr("dx", "10")
+
+                        chart.append('g')
+                        .classed('y axis', true)
+                        .call(d3.axisLeft(y)
+                            .ticks(10));
+
+                        
+                            
+                        }
+
+
+                        let legend = d3.select(".legend").append('ul');
+
+                        let legendItems = legend.selectAll('li')
+                        .data(keys)
+                        .enter()
+                        .append('li')
+                        .attr('data-key', (d, i)=>{
+                            return d;
+                        })
+                        .attr('data-index', (d, i)=>{
+                            return i;
+                        })
+                        .attr('data-color', (d, i)=>{
+                            return colors[i];
+                        })
+                        .on('click', function(d) {
+                            dataToStack.sort(function(a, b) {
+                                return parseFloat(b[d])
+                                    - parseFloat(a[d])
+                            });
+                            drawChart();
+                        });
+
+
+                            legendItems.append('span')
+                            .attr('class', 'rect')
+                            .style('cursor', 'pointer')
+                            .style('background-color', (d, i) =>{
+                                return colors[i];
+                            });
+
+                            legendItems.append('span')
+                            // .attr('class', 'label')
+                            .attr('display', 'inline')
+                            .attr('font-weight', 'bold')
+                            .attr('text-align', 'center')
+                            .attr('white-space', 'nowrap')
+                            .attr('vertical-align', 'baseline')
+                            .attr('line-height', '1')
+                            .attr('border-radius', '.25em')
+                            .attr('font-size', '75%')
+                            .attr('padding', '.2em .6em .3em')
+                            .attr('color', '#000000')
+                            .html((d) => {
+                                return d
+                            });
+
+
+
+
+                    });
+
+
+
+
+
+
+            }
+
+            model.init(loadSchools);
+
+
+            </script>
+
+
+
+</body>
+</html>
